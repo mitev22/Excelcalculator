@@ -1,0 +1,42 @@
+ /**
+ * @OnlyCurrentDoc
+ */
+function getDateValues() {
+  const departureDate = getDateValue('L2');
+  const arrivalDate = getDateValue('K2');
+  const dayOfMonth = arrivalDate.getDate();
+  
+  var totalWeekDays = 0;
+  var totalWeekendDays = 0;
+  var totalMonths = -1;
+
+  for (var dateAtSchool = new Date(arrivalDate.getTime()); dateAtSchool <= departureDate; dateAtSchool.setDate(dateAtSchool.getDate()+1)){
+      if (dateAtSchool.getDay() == 6 || dateAtSchool.getDay() == 0) {
+          totalWeekendDays++;
+      } else {
+          totalWeekDays++;
+      }
+	  
+	  if (dateAtSchool.getDate() == dayOfMonth || (previousDayOfMonth < dayOfMonth && dateAtSchool.getDate() < previousDayOfMonth)) {
+        totalMonths++;
+      } 
+	  
+	  previousDayOfMonth = dateAtSchool.getDate();
+  }
+   
+  setValue("H2", totalWeekDays);
+  setValue("I2", totalWeekendDays/2);
+  setValue("J2", totalMonths);
+}
+
+function getDateValue(cellId) {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const range = sheet.getRange(cellId);
+
+  return new Date(range.getValue());
+}
+
+function setValue(cellId, value) {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  sheet.getRange(cellId).setValue(value);
+}
